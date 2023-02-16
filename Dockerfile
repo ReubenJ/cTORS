@@ -1,4 +1,4 @@
-FROM gcc
+FROM gcc AS base
 
 # docker build -t tors-base .
 # docker run --network="host" --rm -it tors-base /bin/bash
@@ -34,9 +34,20 @@ RUN make check; exit 0
 RUN make install
 RUN ldconfig
 
-#Copy ctors folder
+FROM base as build_ctors
+# Copy files needed for build -- this is a bit rough, but works for now
+# This way, changes to the files in the agent, and episode files in the
+# TORS directory and the json in the data directory don't trigger a rebuild
 RUN mkdir /ctors
 COPY . /ctors
+COPY TORS/requirements /ctors/TORS/requirements
+COPY TORS/requirements-visualizer /ctors/TORS/requirements-visualizer
+COPY cTORS /ctors/cTORS
+COPY cTORSTest /ctors/cTORSTest
+COPY protos /ctors/protos
+COPY pyTORS /ctors/pyTORS
+COPY setup.py /ctors/
+COPY CMakeLists.txt /ctors/
 WORKDIR /ctors
 
 
@@ -51,6 +62,11 @@ RUN mkdir agents && \
     mkdir TORS/log_tensorboard && \
     mkdir build
 RUN python3 setup.py install
+
+# Copy all of the json files in now that the build has completed. Changes to the json files
+# (which might occur more often) will only trigger the subsequent commands to run and not
+# the entire CMake build for cTORS.
+COPY . /ctors
 
 #Configure visualizer
 WORKDIR /ctors/TORS/visualizer
@@ -71,5 +87,3 @@ WORKDIR /ctors
 #Run visualizer
 #WORKDIR /ctors/TORS/visualizer
 #RUN python3 -m flask run
-    
-
