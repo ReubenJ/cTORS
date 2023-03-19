@@ -1,5 +1,5 @@
 from typing import Callable
-from pyTORS import ScenarioFailedError
+from pyTORS import ScenarioFailedError, Scenario
 from manager.simulator import Simulator
 from planner.planner import Planner
 import importlib
@@ -10,6 +10,9 @@ from typing import Optional
 from typing_extensions import Self
 import functools
 from manager.config import AgentConfig, EpisodeConfig
+
+from typing import Optional
+from pathlib import Path
 
 
 def time_in_planner(func):
@@ -97,14 +100,22 @@ class Manager:
             self.simulator.apply_action(action)
             return True
 
-    def run(self, n_trains=2):
+    def run(
+        self,
+        n_trains=2,
+        result_save_path: Optional[Path] = None,
+        scenario: Optional[Scenario] = None,
+    ):
         failure = False
 
         self.simulator.start()
 
         self.initialize_planner()
 
-        self.simulator.generate_scenario(n_trains)
+        if scenario:
+            self.simulator.set_scenario(scenario)
+        else:
+            self.simulator.generate_scenario(n_trains)
 
         planning_time_left = self.get_remaining_planning_time()
         if planning_time_left < 0 and planning_time_left != -1:
@@ -121,7 +132,7 @@ class Manager:
             if not self.simulator.is_active():  # If scenario not failed or ended
                 break
 
-            # Step simulation and handle possible (expected exceptions)
+            # Step simulation and handle possible/expected exceptions
             try:
                 action = self.get_planner_action(state)
                 should_continue = self.apply_action(state, action)
@@ -138,10 +149,21 @@ class Manager:
                 failure = True
                 break
 
+        if not failure and self.simulator.engine is not None:
+            state_still_active = self.simulator.engine.is_state_active(
+                self.simulator.state
+            )
+            if state_still_active:
+                failure = True
+                self.logger.debug("State is still active.")
+
         result = self.simulator.get_result()
         self.report_planner_result(result)
 
-        return result, failure
+        if result_save_path:
+            result.serialize_to_file(self.simulator.engine, result_save_path)
+
+        return failure
 
     def print(self, m):
         if self.episode_config.verbose >= 1:
