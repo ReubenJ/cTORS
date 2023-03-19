@@ -4,7 +4,6 @@
 	"comment2": "planner.rl_planner.RLPlanner",
 	"seed": 38,
 	"verbose": 1,
-	
 	"planner.rl_planner.RLPlanner": {
 		"model_save": "ppo_tors",
 		"converter": {
@@ -12,4 +11,3 @@
 		}
 	}
 }
-

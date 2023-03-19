@@ -1,21 +1,45 @@
 from planner.planner import Planner
-from pyTORS import BeginMoveAction, EndMoveAction, MoveAction, ArriveAction, ExitAction, ServiceAction, \
-    WaitAction, SetbackAction, SplitAction, CombineAction, TrackPartType,\
-    State, Location, ShuntingUnit, Train, Incoming, Outgoing, Engine, Action, Track, Task
+from pyTORS import (
+    BeginMoveAction,
+    EndMoveAction,
+    MoveAction,
+    ArriveAction,
+    ExitAction,
+    ServiceAction,
+    WaitAction,
+    SetbackAction,
+    SplitAction,
+    CombineAction,
+    TrackPartType,
+    State,
+    Location,
+    ShuntingUnit,
+    Train,
+    Incoming,
+    Outgoing,
+    Engine,
+    Action,
+    Track,
+    Task,
+)
 import random
 from typing import List, Tuple, Type, Optional
+import logging
+
 
 class GreedyPlanner(Planner):
-    
     def __init__(self, config, greedy_config):
         super(GreedyPlanner, self).__init__(config)
         self.reset()
-    
+
     def get_action(self, state: State) -> Optional[Action]:
         if self.plan is None:
             self.plan = Plan(state, self.get_location())
         actions = self.get_valid_actions(state)
-        if len (actions) == 0: return None
+        # self.logger.debug(f"{state.print_state_info()}")
+        self.logger.debug(f"{actions=}")
+        if len(actions) == 0:
+            return None
         return self.plan.get_action(state, actions)
 
     def reset(self):
@@ -25,8 +49,8 @@ class GreedyPlanner(Planner):
     def close(self):
         pass
 
-class Plan:
 
+class Plan:
     def __init__(self, state: State, location: Location):
         self.location = location
         self.incoming = state.incoming_trains
@@ -39,17 +63,25 @@ class Plan:
                 available_trains.append(tr)
         for out in self.outgoing:
             for tr in out.shunting_unit.trains:
-                train = self.find_match(available_trains, tr) if tr not in self.trains else tr
+                train = (
+                    self.find_match(available_trains, tr)
+                    if tr not in self.trains
+                    else tr
+                )
                 available_trains.remove(train)
                 self.trains[train].update_outgoing(out, tr)
         for train, train_state in self.trains.items():
             train_state.set_same_shunting_unit()
         for train in self.trains:
             self.location.calc_shortest_paths(train.type)
+        self.logger = logging.getLogger(
+            f"{self.__class__.__module__}.{self.__class__.__name__}"
+        )
 
     def find_match(self, trains: List[Train], train: Train):
         for t in trains:
-            if t.type == train.type: return t
+            if t.type == train.type:
+                return t
         return None
 
     def get_action(self, state: State, actions: List[Action]):
@@ -59,14 +91,21 @@ class Plan:
             for tr in su.trains:
                 serv = state.get_tasks_for_train(tr)
                 self.trains[tr].update_current_state(prev, pos, serv, su)
-        action_priority = sum([train_state.get_action_priority(state, actions) for train_state in self.trains.values()], [])
+        action_priority = sum(
+            [
+                train_state.get_action_priority(state, actions)
+                for train_state in self.trains.values()
+            ],
+            [],
+        )
         action_priority = sorted(action_priority, key=lambda ap: ap[0], reverse=True)
-        if(action_priority[0][0] == 0):
+        self.logger.debug(action_priority)
+        if action_priority[0][0] == 0:
             return random.choice(actions)
         return action_priority[0][1]
 
+
 class TrainState:
-    
     def __init__(self, train: Train, incoming: Incoming, location: Location):
         self.train = train
         self.location = location
@@ -82,6 +121,9 @@ class TrainState:
         self.end_su = None
         self.departure_time = None
         self.same_shunting_unit = True
+        self.logger = logging.getLogger(
+            f"{self.__class__.__module__}.{self.__class__.__name__}"
+        )
 
     def update_outgoing(self, outgoing: Outgoing, train_match: Train):
         self.outgoing = outgoing
@@ -91,7 +133,9 @@ class TrainState:
         self.out_su = outgoing.shunting_unit
         self.departure_time = outgoing.time
 
-    def update_current_state(self, previous: Track, position: Track, tasks: List[Task], su: ShuntingUnit):
+    def update_current_state(
+        self, previous: Track, position: Track, tasks: List[Task], su: ShuntingUnit
+    ):
         self.in_su = su
         self.begin_track = position
         self.begin_side_track = previous
@@ -119,25 +163,66 @@ class TrainState:
                 pos = state.get_position(su)
                 moving = state.is_moving(su)
                 if not self.service_track is None and pos == self.service_track:
-                    if moving: TrainState.add_action_if_found(actions, priority, 5, EndMoveAction, su)
-                    else: TrainState.add_action_if_found(actions, priority, 20, ServiceAction, su)
-                if pos == self.end_track and self.end_side_track in pos.get_next_track_parts(prev):
-                    if moving: TrainState.add_action_if_found(actions, priority, 5, EndMoveAction, su)
-                    else: TrainState.add_action_if_found(actions, priority, 100, ExitAction, su)
+                    if moving:
+                        TrainState.add_action_if_found(
+                            actions, priority, 5, EndMoveAction, su
+                        )
+                    else:
+                        TrainState.add_action_if_found(
+                            actions, priority, 20, ServiceAction, su
+                        )
+                if (
+                    pos == self.end_track
+                    and self.end_side_track in pos.get_next_track_parts(prev)
+                ):
+                    self.logger.debug(
+                        "On end track facing the correct direction.\n"
+                        "Unit should leave at %s, and the time is currently %s.\n"
+                        "The unit is moving: %s"
+                        % (self.departure_time, state.time, moving),
+                    )
+                    if moving:
+                        TrainState.add_action_if_found(
+                            actions, priority, 5, EndMoveAction, su
+                        )
+                    else:
+                        TrainState.add_action_if_found(
+                            actions, priority, 100, ExitAction, su
+                        )
                 else:
-                    if not moving: TrainState.add_action_if_found(actions, priority, 5, BeginMoveAction, su)
+                    if not moving:
+                        TrainState.add_action_if_found(
+                            actions, priority, 5, BeginMoveAction, su
+                        )
                     else:
                         if not self.service_track is None:
                             side_track1 = self.service_track.neighbors[0]
                             side_track2 = self.service_track.neighbors[1]
-                            path1 = self.location.get_shortest_path(self.train.type, prev, pos, side_track1, self.service_track)
-                            path2 = self.location.get_shortest_path(self.train.type, prev, pos, side_track2, self.service_track)
+                            path1 = self.location.get_shortest_path(
+                                self.train.type,
+                                prev,
+                                pos,
+                                side_track1,
+                                self.service_track,
+                            )
+                            path2 = self.location.get_shortest_path(
+                                self.train.type,
+                                prev,
+                                pos,
+                                side_track2,
+                                self.service_track,
+                            )
                             if path1.length > path2.length:
                                 path = path2
-                            else: path = path1
+                            else:
+                                path = path1
                         else:
-                            side_track = self.end_track.get_next_track_parts(self.end_side_track)[0]
-                            path = self.location.get_shortest_path(self.train.type, prev, pos, side_track, self.end_track)
+                            side_track = self.end_track.get_next_track_parts(
+                                self.end_side_track
+                            )[0]
+                            path = self.location.get_shortest_path(
+                                self.train.type, prev, pos, side_track, self.end_track
+                            )
                         nextTrack = None
                         nextTrackPrev = pos
                         for track in path.route[1:]:
@@ -146,28 +231,65 @@ class TrainState:
                                 break
                             nextTrackPrev = track
                         if not nextTrack is None:
-                            if nextTrack == nextTrackPrev: 
-                                TrainState.add_action_if_found(actions, priority, 20, SetbackAction, su)   
+                            if nextTrack == nextTrackPrev:
+                                TrainState.add_action_if_found(
+                                    actions, priority, 20, SetbackAction, su
+                                )
                             else:
-                                TrainState.add_action_if_found(actions, priority, 20, MoveAction, su, track=nextTrack, prev=nextTrackPrev)   
-                
+                                TrainState.add_action_if_found(
+                                    actions,
+                                    priority,
+                                    20,
+                                    MoveAction,
+                                    su,
+                                    track=nextTrack,
+                                    prev=nextTrackPrev,
+                                )
+
                 TrainState.add_action_if_found(actions, priority, 1, WaitAction, su)
         else:
-            TrainState.add_action_if_found(actions, priority, 10, SplitAction, su)   
-            TrainState.add_action_if_found(actions, priority, 10, CombineAction, self.out_su)
+            TrainState.add_action_if_found(actions, priority, 10, SplitAction, su)
+            TrainState.add_action_if_found(
+                actions, priority, 10, CombineAction, self.out_su
+            )
         return priority
-    
+
     @staticmethod
-    def add_action_if_found(actions: List[Action], priority_list: List[Tuple[int, Action]], priority: int, \
-            action_type: Type[Action], su: ShuntingUnit, track: Track = None, prev: Track = None):
+    def add_action_if_found(
+        actions: List[Action],
+        priority_list: List[Tuple[int, Action]],
+        priority: int,
+        action_type: Type[Action],
+        su: ShuntingUnit,
+        track: Track = None,
+        prev: Track = None,
+    ):
         action = TrainState.find_action(actions, action_type, su, track, prev)
-        if action: priority_list.append((priority, action))
+        if action:
+            priority_list.append((priority, action))
 
     @staticmethod
-    def find_action(actions: List[Action], action_type: Type[Action], su: ShuntingUnit, track: Track = None, prev: Track = None):
-        return next((a for a in actions if isinstance(a, action_type) \
-            and (a.shunting_unit == su \
-                or (action_type==CombineAction and a.shunting_unit.matches_shunting_unit(su)))\
-            and (track is None or a.destination_track == track) \
-            and (prev is None or a.previous_track == prev)), None)
-
+    def find_action(
+        actions: List[Action],
+        action_type: Type[Action],
+        su: ShuntingUnit,
+        track: Track = None,
+        prev: Track = None,
+    ):
+        return next(
+            (
+                a
+                for a in actions
+                if isinstance(a, action_type)
+                and (
+                    a.shunting_unit == su
+                    or (
+                        action_type == CombineAction
+                        and a.shunting_unit.matches_shunting_unit(su)
+                    )
+                )
+                and (track is None or a.destination_track == track)
+                and (prev is None or a.previous_track == prev)
+            ),
+            None,
+        )
