@@ -1,6 +1,6 @@
 {
-	"data folder": "../data/basic_inference",
-	"scenario": "../data/basic_inference/scenario.json",
+	"data folder": "../data/Demo",
+	"scenario": "../data/Demo/scenario.json",
 	"verbose": 1,
 	"n_runs": 100,
 	"max_trains": 5,
