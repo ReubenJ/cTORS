@@ -46,10 +46,10 @@ if(BUILD_DOC)
 	endif (DOXYGEN_FOUND)
 endif(BUILD_DOC)
 
+cmake_policy(SET CMP0135 NEW)
 #Fetch the JSON library
-FetchContent_Declare(json
-  GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.7.3)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
@@ -166,28 +166,22 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS
 	${PROTOS_DIR}/Plan.proto
 )
 
+add_library(cTORS SHARED ${PROTO_SRCS} ${PROTO_HDRS} ${TORS_SOURCE_FILES} )
+
 #python make docs
 set(Python3_FIND_STRATEGY LOCATION)
 set(Python3_FIND_VIRTUALENV ONLY)
 find_package(Python3 COMPONENTS Interpreter)
-if (Python3_Interpreter_FOUND)
-	execute_process(COMMAND ${Python3_EXECUTABLE} -m pybind11_mkdoc -o ../pyTORS/docstrings.h ${TORS_HEADER_FILES} -I ${CMAKE_CURRENT_BINARY_DIR}
-    	WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} RESULT_VARIABLE py_mkdoc_result)
-	if(${py_mkdoc_result})
-		message(STATUS "pybind11_mkdoc failed")
-	else()
-		message(STATUS "pybind11 documentation succesfully generated")
-	endif()
-endif()
 
-add_library(cTORS SHARED ${PROTO_SRCS} ${PROTO_HDRS} ${TORS_SOURCE_FILES} )
-
+add_custom_target( doc_pybind11_mkdoc ALL
+		COMMAND ${Python3_EXECUTABLE} -m pybind11_mkdoc -o pyTORS/docstrings.h ${TORS_HEADER_FILES} -I ${CMAKE_CURRENT_BINARY_DIR} -I ${json_SOURCE_DIR}/include
+		WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+		COMMENT "Generating Python binding documentation with pybind11_mkdoc"
+		VERBATIM )
+add_dependencies(doc_pybind11_mkdoc nlohmann_json::nlohmann_json)
 
 target_include_directories(cTORS PUBLIC ${PROJECT_INCLUDE_DIR})
 target_include_directories(cTORS PUBLIC ${PROTOBUF_INCLUDE_DIRS})
 target_include_directories(cTORS PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(cTORS PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(cTORS PUBLIC ${PROTOBUF_LIBRARIES})
-
-
-
