@@ -90,8 +90,8 @@ void MoveActionGenerator::Generate(const State* state, list<const Action*>& out)
 		auto track = suState.position;
 		auto previous = suState.inNeutral ? nullptr : suState.previous;
 		auto& previous_list = suState.inNeutral ? track->GetNeighbors() : vector<const Track*>({previous});
-		for(auto& previous: previous_list) {
-			auto& paths = location->GetPossiblePaths({previous, track});
+		for(auto& prevTrack: previous_list) {
+			auto& paths = location->GetPossiblePaths({prevTrack, track});
 			for(auto& path: paths) {
 				out.push_back(Generate(state, MultiMove(su, path.route)));
 			}

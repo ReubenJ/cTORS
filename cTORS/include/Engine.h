@@ -78,7 +78,7 @@ public:
 	/** Get the RunResult for the given State/session */
 	RunResult* GetResult(State* state) const { return results.at(state); }
 	/** Import a RunResult from a protobuf file */
-	RunResult* ImportResult(const string& path);
+	RunResult* ImportResult(const string& path_to_json);
 };
 
 /**

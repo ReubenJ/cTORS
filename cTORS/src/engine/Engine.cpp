@@ -247,9 +247,9 @@ const Path LocationEngine::GetPath(const State* state, const Move& move) const {
 	return moveGenerator->GeneratePath(state, move);
 }
 
-RunResult* LocationEngine::ImportResult(const string& path) {
+RunResult* LocationEngine::ImportResult(const string& path_to_json) {
 	PBRun run;
-	parse_json_to_pb(path, &run);
+	parse_json_to_pb(path_to_json, &run);
 	return RunResult::CreateRunResult(&location, run);
 }
 

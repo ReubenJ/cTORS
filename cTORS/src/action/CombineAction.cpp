@@ -2,15 +2,15 @@
 #include "State.h"
 
 void CombineAction::Start(State* state) const {
-    auto frontSU = GetFrontShuntingUnit();
-    auto rearSU = GetRearShuntingUnit();
-    auto& suState = state->GetShuntingUnitState(frontSU);
+    auto frontShuntingUnit = GetFrontShuntingUnit();
+    auto rearShuntingUnit = GetRearShuntingUnit();
+    auto& suState = state->GetShuntingUnitState(frontShuntingUnit);
     auto track = suState.position;
     auto previous = suState.previous;
     bool direction = track->IsASide(previous);
     auto frontTrain = direction ? &combinedSU.GetTrains().front() : &combinedSU.GetTrains().back();
-    state->RemoveShuntingUnit(frontSU);
-    state->RemoveShuntingUnit(rearSU);
+    state->RemoveShuntingUnit(frontShuntingUnit);
+    state->RemoveShuntingUnit(rearShuntingUnit);
     state->AddShuntingUnitOnPosition(&combinedSU, track, previous, frontTrain, position);
     auto su = state->GetMatchingShuntingUnit(&combinedSU);
     state->SetInNeutral(su, inNeutral);
