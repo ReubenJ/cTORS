@@ -94,7 +94,7 @@ public:
 	Engine() = default;
 	/** Start the Engine with one Location as described by the given folder */
 	Engine(const string& path);
-	/** Engine desetructor */
+	/** Engine destructor */
 	~Engine() = default;
 	/** Get or load the LocationEngine based on its file location */
 	LocationEngine* GetOrLoadLocationEngine(const string& location);
