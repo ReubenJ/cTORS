@@ -201,11 +201,9 @@ bool LocationEngine::EvaluatePlan(const Scenario& scenario, const POSPlan& plan)
         } catch (ScenarioFailedException& e) {
 			cout << "Scenario failed." << endl;
 			return false;
-			break;
 		} catch (InvalidActionException& e) {
 			cout << "Scenario failed. Invalid action: " << e.what() << "." << endl;
 			return false;
-			break;
 		}
     }
 	bool result = (state->GetShuntingUnits().size() == 0);
