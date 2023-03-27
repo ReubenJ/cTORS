@@ -55,6 +55,8 @@ public:
 	 * Default copy constructor
 	 */
 	SimpleAction(const SimpleAction& sa) = default;
+
+    virtual ~SimpleAction() = default;
 	
 	/**
 	 * Get the train ids of the ShuntingUnit
@@ -692,7 +694,7 @@ public:
 	/** Construct this ActionGenerator based on the parameters defined in the json object */
 	ActionGenerator(const json& params, const Location* location) : location(location) {}
 	/** The default destructor */
-	~ActionGenerator() = default;
+	virtual ~ActionGenerator() = default;
 	/** Generate actions given the State and store the result in the out list */
 	virtual void Generate(const State* state, list<const Action*>& out) const = 0;
 	/** Generate an Action object from a SimpleAction object given a State */

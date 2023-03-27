@@ -31,6 +31,8 @@ public:
 	
 	/** Construct this BusinessRule using the given Config object */
 	BusinessRule(const Config* config) : config(config) {};
+
+    virtual ~BusinessRule() = default;
 	
 	/**
 	 * Validate the action for the given state.
