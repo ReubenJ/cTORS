@@ -54,8 +54,7 @@ void MoveHelperGenerator::Generate(const State* state, list<const Action*>& out)
 	out.insert(out.end(), replacements.begin(), replacements.end());
 
 	//Generate EndMoveAction%s
-	auto& sus = state->GetShuntingUnits();
-	for (auto& [su, suState]: state->GetShuntingUnitStates()) {
+    for (auto& [su, suState]: state->GetShuntingUnitStates()) {
 		auto& track = suState.position;
 		if (suState.moving && !suState.beginMoving && !suState.waiting && track->parkingAllowed && !suState.HasActiveAction()) {
 			out.push_back(Generate(state, EndMove(su)));

@@ -20,7 +20,7 @@ void ShuntingUnit::UpdateValues() {
 	for (auto& t : trains) {
 		length += t.GetType()->length;
 		needsElectricity |= t.GetType()->needsElectricity;
-		trainString += (t.toString() + (first ? "" : "-"));
+		trainString += t.toString();
 		trainIDs.push_back(t.GetID());
 	}
 }

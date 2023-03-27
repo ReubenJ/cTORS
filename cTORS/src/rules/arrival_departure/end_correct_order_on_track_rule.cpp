@@ -13,8 +13,7 @@ pair<bool, string> end_correct_order_on_track_rule::IsValid(const State* state, 
 		return make_pair(true, "");
 	if (auto ea = dynamic_cast<const ExitAction*>(action)) {
 		auto su = ea->GetShuntingUnit();
-		auto parking = ea->GetOutgoing()->GetParkingTrack();
-		auto side = ea->GetOutgoing()->GetSideTrack();
+        auto side = ea->GetOutgoing()->GetSideTrack();
 		if (!state->CanMoveToSide(su, side))
 			return make_pair(false, "Outstanding shunting unit " + su->toString() + " is not standing on the right position on its track.");
 	}

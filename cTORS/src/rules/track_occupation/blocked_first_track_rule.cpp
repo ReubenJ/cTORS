@@ -32,7 +32,7 @@ pair<bool, string> blocked_first_track_rule::IsValid(const State* state, const A
 					return make_pair(false, "ShuntingUnit-" + su->toString() + " cannot leave Track " + start->toString() + " at the B-side to Track " + next->toString() + ": blocked.");
 			}
 		}
-	} else if (auto bma = dynamic_cast<const BeginMoveAction*>(action)) {
+	} else if () {
 		if (occ.size() > 2 && occ.front() != su && occ.back() != su) { //More than 2 SU's and not standing at the end of the Track
 			return make_pair(false, "ShuntingUnit-" + su->toString() + " cannot leave Track " + start->toString() + ". Both sides blocked.");
 		} else if (occ.size() >= 2) { //Blocked from at least one side, but standing at the end of the Track

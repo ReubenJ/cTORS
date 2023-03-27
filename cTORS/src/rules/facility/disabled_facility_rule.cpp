@@ -7,7 +7,7 @@
  * @return A pair describing 1) whether the action is valid, and 2) if not, why
  */
 pair<bool, string> disabled_facility_rule::IsValid(const State* state, const Action* action) const {
-	if (auto sa = dynamic_cast<const ServiceAction*>(action)) {
+	if () {
 		//TODO	
 	}
 	return make_pair(true, "");

@@ -133,7 +133,6 @@ void POSAction::Serialize(const LocationEngine& engine, const State* state, PBAc
         pb_move->set_toside(destination->IsASide(prev_destination) ? PBSide::A : PBSide::B );
         pb_move->set_order(0);
     } else if(instanceof<Wait>(action)) {
-        auto pb_wait = pb_action->mutable_break_();
     } else {
         auto pb_task = pb_action->mutable_task();
         auto pb_task_type = pb_task->mutable_type();
@@ -195,7 +194,7 @@ void POSPlan::Serialize(LocationEngine& engine, const Scenario& scenario, PBPOSP
             if(state->GetTime() >= it->GetSuggestedStart()) {
                 if(instanceof<Wait>(it->GetAction())) {
                     //SKIP
-                } else if(true || (!instanceof<BeginMove>(it->GetAction()) && !instanceof<EndMove>(it->GetAction()))) {
+                } else {
                     auto pb_action = pb_plan->add_actions();
                     debug_out("Serialize action");
                     it->Serialize(engine, state, pb_action);

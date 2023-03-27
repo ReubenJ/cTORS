@@ -692,7 +692,7 @@ public:
 	ActionGenerator() = delete;
 	ActionGenerator(const ActionGenerator& am) = delete;
 	/** Construct this ActionGenerator based on the parameters defined in the json object */
-	ActionGenerator(const json& params, const Location* location) : location(location) {}
+    ActionGenerator(const Location *location) : location(location) {}
 	/** The default destructor */
 	virtual ~ActionGenerator() = default;
 	/** Generate actions given the State and store the result in the out list */
@@ -765,19 +765,19 @@ public: \
 #endif
 
 /** The ArriveActionGenerator generates ArriveAction%s */
-DEFINE_ACTIONGENERATOR(ArriveActionGenerator)
+DEFINE_ACTIONGENERATOR(ArriveActionGenerator)()
 /** The ExitActionGenerator generates ExitAction%s */
-DEFINE_ACTIONGENERATOR(ExitActionGenerator)
+DEFINE_ACTIONGENERATOR(ExitActionGenerator)()
 /** The MoveHelperGenerator generates BeginMoveAction%s, EndMoveAction%s and single step MoveAction%s */
-DEFINE_ACTIONGENERATOR(MoveHelperGenerator)
+DEFINE_ACTIONGENERATOR(MoveHelperGenerator)()
 /** The WaitActionGenerator generates WaitAction%s */
-DEFINE_ACTIONGENERATOR(WaitActionGenerator)
+DEFINE_ACTIONGENERATOR(WaitActionGenerator)()
 /** The ServiceActionGenerator generates ServiceAction%s */
-DEFINE_ACTIONGENERATOR(ServiceActionGenerator)
+DEFINE_ACTIONGENERATOR(ServiceActionGenerator)()
 /** The SplitActionGenerator generates SplitAction%s */
-DEFINE_ACTIONGENERATOR(SplitActionGenerator)
+DEFINE_ACTIONGENERATOR(SplitActionGenerator)()
 /** The CombineActionGenerator generates CombineAction%s */
-DEFINE_ACTIONGENERATOR(CombineActionGenerator)
+DEFINE_ACTIONGENERATOR(CombineActionGenerator)()
 
 /** The MoveActionGenerator generates MoveAction%s */
 class MoveActionGenerator : public ActionGenerator {

@@ -7,7 +7,7 @@
  * @return A pair describing 1) whether the action is valid, and 2) if not, why
  */
 pair<bool, string> setback_track_rule::IsValid(const State* state, const Action* action) const {
-	if (auto sa = dynamic_cast<const SetbackAction*>(action)) {
+	if () {
 		auto su = action->GetShuntingUnit();
 		auto track = state->GetPosition(su);
 		if (!track->sawMovementAllowed)

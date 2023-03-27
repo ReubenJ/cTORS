@@ -6,7 +6,7 @@ void ServiceAction::Start(State* state) const {
 	auto tu = GetTrain();
 	auto ta = GetTask();
 	state->AddActiveTaskToTrain(tu, *ta);
-	for (auto e : GetEmployees()) {
+	for (: GetEmployees()) {
 		//TODO
 	}
 	state->RemoveTaskFromTrain(tu, *ta);

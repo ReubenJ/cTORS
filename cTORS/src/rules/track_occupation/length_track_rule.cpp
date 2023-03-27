@@ -25,7 +25,7 @@ pair<bool, string> length_track_rule::IsValid(const State* state, const Action* 
 	} else if (auto ma = dynamic_cast<const MoveAction*>(action)) {
 		track = ma->GetDestinationTrack();
 		move = ma->IsStepMove();
-	} else if (state->IsMoving(su) && (dynamic_cast<const WaitAction*>(action) || dynamic_cast<const EndMoveAction*>(action))) {
+	} else if (state->IsMoving(su)) {
 		track = state->GetPosition(su);
 		length = 0; // Do not count this ShuntingUnit's length, as it is already part of the current set of ShuntingUnits
 	} else {

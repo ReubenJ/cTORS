@@ -6,7 +6,7 @@ void SetbackAction::Start(State* state) const {
 	auto& suState = state->GetShuntingUnitState(su);
 	state->SetPrevious(su, suState.position->GetOppositeSide(suState.previous));
 	state->SwitchFrontTrain(su);
-	for (auto e : GetDrivers()) {
+	for (: GetDrivers()) {
 		//TODO
 	}
 	state->AddActiveAction(su, this);
@@ -22,7 +22,8 @@ const string SetbackAction::toString() const {
 }
 
 
-SetbackActionGenerator::SetbackActionGenerator(const json& params, const Location* location) : ActionGenerator(params, location) {
+SetbackActionGenerator::SetbackActionGenerator(const json& params, const Location* location) : ActionGenerator(
+        location) {
 	params.at("constant_time").get_to(constantTime);
 	params.at("default_time").get_to(defaultTime);
 	params.at("norm_time").get_to(normTime);
@@ -36,8 +37,7 @@ int SetbackActionGenerator::GetDuration(const State* state, const ShuntingUnit* 
 
 const Action* SetbackActionGenerator::Generate(const State* state, const SimpleAction& action) const {
 	auto su = InitialCheck(state, action);
-	auto& suState = state->GetShuntingUnitState(su);
-	vector<const Employee*> drivers;
+    vector<const Employee*> drivers;
 	auto duration = GetDuration(state, su, drivers.size());
 	return new SetbackAction(su, drivers, duration);
 }
@@ -48,9 +48,6 @@ void SetbackActionGenerator::Generate(const State* state, list<const Action*>& o
 	for (const auto& [su, suState] : state->GetShuntingUnitStates()) {
 		if (suState.waiting || suState.inNeutral || suState.HasActiveAction()) continue;
 		vector<const Employee*> drivers;
-		if (driver_mandatory) {
-			//TODO
-		}
-		out.push_back(Generate(state, Setback(su)));		
+        out.push_back(Generate(state, Setback(su)));
 	}
 }

@@ -76,7 +76,6 @@ void CombineActionGenerator::Generate(const State* state, list<const Action*>& o
             auto& suStateB = state->GetShuntingUnitState(suB);
             if(suStateA.HasActiveAction() || suStateB.HasActiveAction() || suStateA.moving || suStateB.moving || (suStateA.waiting && suStateB.waiting)) continue;
             // In case both shunting units are in neutral, they can be combined in both directions
-            bool neutral = suStateA.inNeutral && suStateB.inNeutral;
             // In case both shunting units are not in neutral, they can only combine if they have the same direction
             bool notNeutral = (!suStateA.inNeutral && !suStateB.inNeutral);
             

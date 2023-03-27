@@ -10,7 +10,7 @@
 pair<bool, string> electric_track_rule::IsValid(const State* state, const Action* action) const {
 	auto su = action->GetShuntingUnit();
 	if (!su->NeedsElectricity()) return make_pair(true, "");
-	const Track* destination = nullptr;
+	const Track* destination;
 	if (auto ma = dynamic_cast<const MoveAction*>(action)) {
 		destination = ma->GetDestinationTrack();
 	} else if (auto aa = dynamic_cast<const ArriveAction*>(action)) {

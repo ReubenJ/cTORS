@@ -60,7 +60,7 @@ void SplitActionGenerator::Generate(const State* state, list<const Action*>& out
 	for (const auto& [su, suState] : state->GetShuntingUnitStates()) {
 		auto size = su->GetTrains().size();
 		if (size <= 1 || suState.moving || suState.waiting || suState.HasActiveAction()) continue;
-		auto duration = suState.frontTrain->GetType()->splitDuration;
+		auto duration;
 		for(int splitPosition = 1; splitPosition < size; splitPosition++) {
 			out.push_back(Generate(state, Split(su, splitPosition)));
 		}

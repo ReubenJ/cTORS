@@ -47,7 +47,7 @@ const string MoveAction::toString() const {
 	return "Move " + su->toString() + " to " + GetDestinationTrack()->toString() + " (route: " + Join(GetTracks(), " - ") + ")";
 }
 
-MoveActionGenerator::MoveActionGenerator(const json& params, const Location* location) : ActionGenerator(params, location) {
+MoveActionGenerator::MoveActionGenerator(const json& params, const Location* location) : ActionGenerator(location) {
 	params.at("no_routing_duration").get_to(noRoutingDuration);
 	params.at("constant_time").get_to(constantTime);
 	params.at("default_time").get_to(defaultTime);
@@ -70,7 +70,7 @@ const Action* MoveActionGenerator::Generate(const State* state, const SimpleActi
 		auto move = static_cast<const Move*>(&action);	
 		auto& path = GeneratePath(state, *move);
 		return new MoveAction(su, vector<const Track*>(path.route.begin(), path.route.end()), path.length, true);
-	} else {
+	} else if (instanceof<MultiMove>(&action)){
 		auto move = static_cast<const MultiMove*>(&action);
 		auto& trackIDs = move->GetTrackIDs();
 		vector<const Track*> tracks(trackIDs.size());
@@ -78,14 +78,14 @@ const Action* MoveActionGenerator::Generate(const State* state, const SimpleActi
 			-> const Track* { return  location->GetTrackByID(id); });
 		auto length = location->GetDistance(tracks);
 		return new MoveAction(su, tracks, length, false);
-	}
-	throw invalid_argument("The MoveActionGenerator can only deal with Move and MultiMove actions and not with " + action.toString());
+	} else {
+        throw invalid_argument("The MoveActionGenerator can only deal with Move and MultiMove actions and not with " + action.toString());
+    }
 }
 
 void MoveActionGenerator::Generate(const State* state, list<const Action*>& out) const {
 	if(state->GetTime()==state->GetEndTime()) return;
-	auto& sus = state->GetShuntingUnits();
-	for (const auto& [su, suState] : state->GetShuntingUnitStates()) {
+    for (const auto& [su, suState] : state->GetShuntingUnitStates()) {
 		if (suState.HasActiveAction()) continue;
 		auto track = suState.position;
 		auto previous = suState.inNeutral ? nullptr : suState.previous;
