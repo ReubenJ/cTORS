@@ -460,7 +460,7 @@ public:
 	inline const Track* GetDestinationTrack() const { return incoming->GetParkingTrack(); }
 	/** Get the Incoming event for this ArriveAction */
 	inline const Incoming* GetIncoming() const { return incoming; }
-	inline const Arrive* CreateSimple() const { return new Arrive(incoming); }
+	inline const Arrive* CreateSimple() const override { return new Arrive(incoming); }
 	ACTION_OVERRIDE(ArriveAction)
 };
 
@@ -495,7 +495,7 @@ public:
 	inline const Track* GetDestinationTrack() const { return outgoing->GetParkingTrack(); }
 	/** Get the Outgoing event for this ArriveAction */
 	inline const Outgoing* GetOutgoing() const { return outgoing; }
-	inline const Exit* CreateSimple() const { return new Exit(GetShuntingUnit(), outgoing); }
+	inline const Exit* CreateSimple() const override { return new Exit(GetShuntingUnit(), outgoing); }
 	ACTION_OVERRIDE(ExitAction)
 };
 
@@ -508,7 +508,7 @@ public:
 	BeginMoveAction() = delete;
 	/** Construct a BeginMoveAction from the given parameters */
 	BeginMoveAction(const ShuntingUnit* su, int duration) : Action(su, {}, duration) {};
-	inline const BeginMove* CreateSimple() const {return new BeginMove(GetShuntingUnit()); }
+	inline const BeginMove* CreateSimple() const override{return new BeginMove(GetShuntingUnit()); }
 	ACTION_OVERRIDE(BeginMoveAction)
 };
 
@@ -521,7 +521,7 @@ public:
 	EndMoveAction() = delete;
 	/** Construct a EndMoveAction from the given parameters */
 	EndMoveAction(const ShuntingUnit* su, int duration) : Action(su, {}, duration) {};
-	inline const EndMove* CreateSimple() const {return new EndMove(GetShuntingUnit()); }
+	inline const EndMove* CreateSimple() const override {return new EndMove(GetShuntingUnit()); }
 	ACTION_OVERRIDE(EndMoveAction)
 };
 
@@ -550,7 +550,7 @@ public:
 	inline const vector<const Track*>& GetTracks() const { return tracks; }
 	/** True if this MoveAction is a step-by-step move, otherwise false */
 	inline bool IsStepMove() const { return stepMove; }
-	inline const Move* CreateSimple() const {return new Move(GetShuntingUnit(), GetDestinationTrack()); }
+	inline const Move* CreateSimple() const override {return new Move(GetShuntingUnit(), GetDestinationTrack()); }
 	ACTION_OVERRIDE(MoveAction)
 };
 
@@ -581,7 +581,7 @@ public:
 	inline const ShuntingUnit* GetRearShuntingUnit() const { return rearSU; }
 	/** Get the combined ShuntingUnit */
 	inline const ShuntingUnit* GetCombinedShuntingUnit() const { return &combinedSU; }
-	inline const Combine* CreateSimple() const {return new Combine(GetShuntingUnit(), rearSU); }
+	inline const Combine* CreateSimple() const override {return new Combine(GetShuntingUnit(), rearSU); }
 	ACTION_OVERRIDE(CombineAction)
 };
 
@@ -611,7 +611,7 @@ public:
 	 * 3. SU1: A-B-C, SU2: D
 	 */
 	inline const int GetSplitIndex() const { return GetASideShuntingUnit()->GetTrains().size(); }
-	inline const Split* CreateSimple() const {return new Split(GetShuntingUnit(), GetSplitIndex()); }
+	inline const Split* CreateSimple() const override {return new Split(GetShuntingUnit(), GetSplitIndex()); }
 	ACTION_OVERRIDE(SplitAction)
 };
 
@@ -640,7 +640,7 @@ public:
 	inline const Facility* GetFacility() const { return facility; }
 	/** Get the Task that will be executed */
 	inline const Task* GetTask() const { return &task; }
-	inline const Service* CreateSimple() const {return new Service(GetShuntingUnit(), *GetTask(), *GetTrain(), GetFacility()); }
+	inline const Service* CreateSimple() const override {return new Service(GetShuntingUnit(), *GetTask(), *GetTrain(), GetFacility()); }
 	ACTION_OVERRIDE(ServiceAction)
 };
 
@@ -654,7 +654,7 @@ public:
 	SetbackAction(const ShuntingUnit* su, vector<const Employee*> drivers, int duration) : Action(su, {}, drivers, duration) {}
 	/** Get the drivers for this action (not yet implemented) */
 	const inline vector<const Employee*>& GetDrivers() const { return GetEmployees(); }
-	inline const Setback* CreateSimple() const {return new Setback(GetShuntingUnit()); }
+	inline const Setback* CreateSimple() const override {return new Setback(GetShuntingUnit()); }
 	ACTION_OVERRIDE(SetbackAction)
 };
 
@@ -666,7 +666,7 @@ public:
 	WaitAction() = delete;
 	/** Construct a WaitAction with duration in seconds */
 	WaitAction(const ShuntingUnit* su, int duration) : Action(su, {}, duration) {}
-	inline const Wait* CreateSimple() const {return new Wait(GetShuntingUnit()); }
+	inline const Wait* CreateSimple() const override {return new Wait(GetShuntingUnit()); }
 	ACTION_OVERRIDE(WaitAction)
 };
 
