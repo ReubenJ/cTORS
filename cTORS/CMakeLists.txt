@@ -112,7 +112,7 @@ set(TORS_SOURCE_FILES
 	${PROJECT_SOURCE_DIR}/rules/facility/disabled_facility_rule.cpp
 	${PROJECT_SOURCE_DIR}/rules/parking/electric_track_rule.cpp
 	${PROJECT_SOURCE_DIR}/rules/parking/legal_on_parking_track_rule.cpp
-	${PROJECT_SOURCE_DIR}/rules/parking/legel_on_setback_track_rule.cpp
+	${PROJECT_SOURCE_DIR}/rules/parking/legal_on_setback_track_rule.cpp
 	${PROJECT_SOURCE_DIR}/rules/service_tasks/correct_facility_rule.cpp
 	${PROJECT_SOURCE_DIR}/rules/service_tasks/mandatory_service_task_rule.cpp
 	${PROJECT_SOURCE_DIR}/rules/service_tasks/optional_service_task_rule.cpp
@@ -176,7 +176,7 @@ if (Python3_Interpreter_FOUND)
 	if(${py_mkdoc_result})
 		message(STATUS "pybind11_mkdoc failed")
 	else()
-		message(STATUS "pybind11 documentation succesfully generated")
+		message(STATUS "pybind11 documentation successfully generated")
 	endif()
 endif()
 

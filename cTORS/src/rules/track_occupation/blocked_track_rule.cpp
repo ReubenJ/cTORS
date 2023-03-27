@@ -11,8 +11,8 @@
  * ShuntingUnits
  */
 pair<bool, string> blocked_track_rule::IsValid(const State* state, const Action* action) const {
-	auto ress = action->GetReservedTracks();
-	for (auto res : ress) {
+	auto reservedTracks = action->GetReservedTracks();
+	for (auto res : reservedTracks) {
 		if (state->IsReserved(res)) return make_pair(false, "Track " + res->toString() + " is reserved.");
 	}
 	return make_pair(true, "");

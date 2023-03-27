@@ -40,7 +40,7 @@ public:
 	TrainGoal(int id, const ShuntingUnit* su, int time, bool isInstanding, int standingIndex)
 			: TrainGoal(id, su, nullptr, nullptr, time, isInstanding, standingIndex, unordered_map<const Train*, vector<Task>, TrainHash, TrainEquals> {}) {};
 	/** Copy this TrainGoal */
-	TrainGoal(const TrainGoal& traingoal);
+	TrainGoal(const TrainGoal& trainGoal);
 	/** Destroy this TrainGoal */
 	~TrainGoal();
 	/** Get the id of this TrainGoal */

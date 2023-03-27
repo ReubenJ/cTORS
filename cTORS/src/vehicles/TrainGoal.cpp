@@ -27,12 +27,12 @@ Incoming::Incoming(const PBTrainGoal& pb_inc, bool isInstanding) : Incoming(stoi
 Outgoing::Outgoing(const PBTrainGoal& pb_out, bool isInstanding) : Outgoing(stoi(pb_out.id()), new ShuntingUnit(pb_out),
  	pb_out.time(), isInstanding, pb_out.standingindex()) {}
 
-TrainGoal::TrainGoal(const TrainGoal& traingoal) :
-	id(traingoal.id), parkingTrack(traingoal.parkingTrack), sideTrack(traingoal.sideTrack),
-	time(traingoal.time), standingIndex(traingoal.standingIndex), isInstanding(traingoal.isInstanding)
+TrainGoal::TrainGoal(const TrainGoal& trainGoal) :
+        id(trainGoal.id), parkingTrack(trainGoal.parkingTrack), sideTrack(trainGoal.sideTrack),
+        time(trainGoal.time), standingIndex(trainGoal.standingIndex), isInstanding(trainGoal.isInstanding)
 {
-	shuntingUnit = new ShuntingUnit(*traingoal.shuntingUnit);
-	for(auto& [train, tasks]: traingoal.tasks) {
+	shuntingUnit = new ShuntingUnit(*trainGoal.shuntingUnit);
+	for(auto& [train, tasks]: trainGoal.tasks) {
 		auto newTrain = shuntingUnit->GetTrainByID(train->GetID());
 		this->tasks[newTrain] = tasks;
 	}

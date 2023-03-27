@@ -51,12 +51,12 @@ void LocationEngine::Step(State * state) {
 	while (!state->IsActionRequired() && state->GetNumberOfEvents() > 0) {
 		debug_out("All shunting units are still active, but still " << state->GetNumberOfEvents() 
 			<< " events available at T" << state->GetTime() << ".");
-		const Event* evnt;
+		const Event* event;
 		if (disturbances.size() > 0 && disturbances.top()->GetTime() <= state->PeekEvent()->GetTime())
-			evnt = disturbances.top();
+            event = disturbances.top();
 		else
-			evnt = state->PopEvent();
-		ExecuteEvent(state, evnt);
+            event = state->PopEvent();
+		ExecuteEvent(state, event);
 		ExecuteImmediateEvents(state);
 		CheckScenarioEnded(state);
 	} 
@@ -154,11 +154,11 @@ void LocationEngine::ExecuteImmediateEvents(State* state) {
 	}
 	debug_out("Execute immediate events (" << to_string(state->GetNumberOfEvents()) << " events queued)");
 	while (state->GetNumberOfEvents() > 0) {
-		auto evnt = state->PeekEvent();
-		debug_out("Next event at T=" << to_string(evnt->GetTime()) << ": " << evnt->toString());
-		if (evnt->GetTime() > state->GetTime()) break;
-		evnt = state->PopEvent();
-		ExecuteEvent(state, evnt);
+		auto event = state->PeekEvent();
+		debug_out("Next event at T=" << to_string(event->GetTime()) << ": " << event->toString());
+		if (event->GetTime() > state->GetTime()) break;
+        event = state->PopEvent();
+		ExecuteEvent(state, event);
 	}
 }
 

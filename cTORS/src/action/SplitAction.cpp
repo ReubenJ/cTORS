@@ -15,7 +15,7 @@ void SplitAction::Start(State* state) const {
 	Suppose a SU T1-T2-T3, with front train T1, and split-index 1
 	resulting in suA: T1, with front train T1. suB: T2-T3, with front train T2
 	The track setup is as follows: A < --- SU ( T3 - T2 - T1> ) ---- > B
-	This means it previous track is at the Aside, but the front train is directed to the Bside.
+	This means it previous track is at the A side, but the front train is directed to the B side.
 	In this case front = true, fromASide = true
 	The resulting setup must be: A < --- suB ( T3 - T2> ) - suA ( T1> ) ---- > B
 	*/

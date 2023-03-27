@@ -11,33 +11,33 @@ Track::Track(const Track& track) :
 	parkingAllowed(track.parkingAllowed), isElectrified(track.isElectrified),
 	aSides(track.aSides), bSides(track.bSides), next(track.next) { }
 
-void Track::AssignNeighbors(vector<const Track*> aside, vector<const Track*> bside)
+void Track::AssignNeighbors(vector<const Track*> aside, vector<const Track*> bSide)
 {
-	if (type == TrackPartType::Railroad && (aside.size() != 1 || bside.size() != 1))
+	if (type == TrackPartType::Railroad && (aside.size() != 1 || bSide.size() != 1))
 		throw InvalidLocationException("Track " + toString() + "(" + id + "): Railroad must have one track at each side");
-	if (type == TrackPartType::Bumper && (aside.size() != 1 ||  bside.size() != 0))
+	if (type == TrackPartType::Bumper && (aside.size() != 1 || bSide.size() != 0))
 		throw InvalidLocationException("Track " + toString() + "(" + id + "): Bumper must have one track at at most one side");
 	//write error functions for Switch, EnglishSwitch, HalfEnglishSwitch, InterSection, Building
 	aSides = aside;
-	bSides = bside;
+	bSides = bSide;
 	if (type == TrackPartType::HalfEnglishSwitch) {
-		next[aside[0]] = bside;
-		next[aside[1]] = vector<const Track*> { bside[1] };
+		next[aside[0]] = bSide;
+		next[aside[1]] = vector<const Track*> {bSide[1] };
 	} else if (type == TrackPartType::InterSection) {
-		next[aside[0]] = vector<const Track*>{ bside[1] };
-		next[aside[1]] = vector<const Track*>{ bside[0] };
+		next[aside[0]] = vector<const Track*>{bSide[1] };
+		next[aside[1]] = vector<const Track*>{bSide[0] };
 	} else {
 		for (const Track* t : aside)
-			next[t] = bside;
+			next[t] = bSide;
 	}
 	if (type == TrackPartType::HalfEnglishSwitch) {
-		next[bside[0]] = aside;
-		next[bside[1]] = vector<const Track*>{ aside[1] };
+		next[bSide[0]] = aside;
+		next[bSide[1]] = vector<const Track*>{aside[1] };
 	} else if (type == TrackPartType::InterSection) {
-		next[bside[0]] = vector<const Track*>{ aside[1] };
-		next[bside[1]] = vector<const Track*>{ aside[0] };
+		next[bSide[0]] = vector<const Track*>{aside[1] };
+		next[bSide[1]] = vector<const Track*>{aside[0] };
 	} else {
-		for (const Track* t : bside)
+		for (const Track* t : bSide)
 			next[t] = aside;
 	}
 }

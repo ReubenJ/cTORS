@@ -71,13 +71,13 @@ bool ShuntingUnit::MatchesShuntingUnit(const ShuntingUnit* su) const {
 		auto& exp = su1Trains.at(i);
 		auto& left = su2Trains.at(i);
 		auto& right = su2Trains.at(su2Trains.size() - 1 - i);
-		bool haveIDleft = (exp.GetID() != -1 && left.GetID() != -1);
-		bool haveIDright = (exp.GetID() != -1 && right.GetID() != -1);
-		if ((haveIDleft && exp.GetID() != left.GetID()) ||
-			(!haveIDleft && exp.GetType()->displayName != left.GetType()->displayName))
+		bool haveIDLeft = (exp.GetID() != -1 && left.GetID() != -1);
+		bool haveIDRight = (exp.GetID() != -1 && right.GetID() != -1);
+		if ((haveIDLeft && exp.GetID() != left.GetID()) ||
+            (!haveIDLeft && exp.GetType()->displayName != left.GetType()->displayName))
 			leftValid = false;
-		if ((haveIDright && exp.GetID() != right.GetID()) ||
-			(!haveIDright && exp.GetType()->displayName != right.GetType()->displayName))
+		if ((haveIDRight && exp.GetID() != right.GetID()) ||
+            (!haveIDRight && exp.GetType()->displayName != right.GetType()->displayName))
 			rightValid = false;	
 		if(!leftValid && !rightValid) return false;
 	}

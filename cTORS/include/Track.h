@@ -86,7 +86,7 @@ public:
 	/**
 	 * Assign the neighbors for this track
 	 */
-	void AssignNeighbors(vector<const Track*> aside, vector<const Track*> bside);
+	void AssignNeighbors(vector<const Track*> aside, vector<const Track*> bSide);
 	
 	/**
 	 * @return true iff track t is part of this track's A-side

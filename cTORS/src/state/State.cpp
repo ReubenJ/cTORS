@@ -42,9 +42,9 @@ const Event* State::PeekEvent() const
 
 const Event* State::PopEvent()
 {
-	auto evnt = events.top();
+	auto topEvent = events.top();
 	events.pop();
-	return evnt;
+	return topEvent;
 }
 
 void State::AddEvent(const Incoming *in) {

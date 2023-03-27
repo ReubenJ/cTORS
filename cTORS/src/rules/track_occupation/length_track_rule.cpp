@@ -1,7 +1,7 @@
 #include "BusinessRules.h"
 
 /**
- * Validates an ArriveAction, MoveAction, WaitAction and EndMoveActin for the given state. 
+ * Validates an ArriveAction, MoveAction, WaitAction and EndMoveAction for the given state.
  * The ArriveAction is invalid iff
  * 1. The total length of the ShuntingUnits on the destination track including this one would exceed the Track's length.
  * 
