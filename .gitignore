@@ -25,3 +25,6 @@ data/*
 !data/Demo
 TORS/runs
 cTORS/doc
+TORS/result*.json
+TORS/scenario*.json
+TORS/episode*.json
