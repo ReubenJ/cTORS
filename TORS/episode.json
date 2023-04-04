@@ -1,6 +1,6 @@
 {
-	"data folder": "../data/Demo",
-	"scenario": "../data/Demo/scenario.json",
+	"data folder": "/workspaces/msc-thesis/cTORS/data/Demo",
+	"scenario": "/workspaces/msc-thesis/cTORS/data/Demo/scenario.json",
 	"verbose": 1,
 	"n_runs": 100,
 	"max_trains": 5,

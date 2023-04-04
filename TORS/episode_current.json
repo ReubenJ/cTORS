@@ -1,0 +1,10 @@
+{
+	"data folder": "/workspaces/msc-thesis/cTORS/data/Demo",
+	"scenario": "/workspaces/msc-thesis/cTORS/TORS/scenario_current.json",
+	"verbose": 1,
+	"time_limit": 10,
+	"generator": {
+		"class": "manager.scenario_generator.ScenarioGeneratorFromFile",
+		"match_outgoing_trains": true
+	}
+}
