@@ -1,6 +1,9 @@
 from pyTORS import Engine, ScenarioFailedError, Scenario
 import importlib
-from manager.scenario_generator import ScenarioGeneratorFromFolder
+from manager.scenario_generator import (
+    ScenarioGeneratorFromFile,
+    ScenarioGeneratorFromFolder,
+)
 import logging
 from manager.config import EpisodeConfig
 
@@ -108,6 +111,8 @@ class Simulator:
         generator_lst = generator_str.split(".")
         _module = importlib.import_module(".".join(generator_lst[:-1]))
         _class = getattr(_module, generator_lst[-1])
+        if generator_lst[-1] == "ScenarioGeneratorFromFile":
+            return ScenarioGeneratorFromFile(_class)
         return ScenarioGeneratorFromFolder(_class, n_trains=n_trains)
 
 

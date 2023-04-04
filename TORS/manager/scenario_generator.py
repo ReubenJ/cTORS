@@ -9,6 +9,7 @@ from pyTORS import (
     TrackPartType,
     Employee,
     Location,
+    Engine,
 )
 import random
 import itertools
@@ -79,6 +80,21 @@ class ScenarioGenerator(ABC):
             for o in scenario.outgoing_trains:
                 for tu in o.shunting_unit.trains:
                     tu.id = -1
+
+
+class ScenarioGeneratorFromFile(ScenarioGenerator):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def initialize(self, engine: Engine, scenario_file_string: str) -> None:
+        super().initialize(engine, scenario_file_string)
+        self.scenario = engine.get_scenario(scenario_file_string)
+
+    def generate_scenario(self) -> Scenario:
+        return self.scenario
+
+    def get_max_trains(self):
+        return -1
 
 
 class ScenarioGeneratorFromScenario(ScenarioGenerator):
