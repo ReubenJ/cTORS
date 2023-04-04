@@ -104,7 +104,6 @@ class Manager:
         self,
         n_trains=2,
         result_save_path: Optional[Path] = None,
-        scenario: Optional[Scenario] = None,
     ):
         failure = False
 
@@ -112,10 +111,7 @@ class Manager:
 
         self.initialize_planner()
 
-        if scenario:
-            self.simulator.set_scenario(scenario)
-        else:
-            self.simulator.generate_scenario(n_trains)
+        self.simulator.generate_scenario(n_trains)
 
         planning_time_left = self.get_remaining_planning_time()
         if planning_time_left < 0 and planning_time_left != -1:
