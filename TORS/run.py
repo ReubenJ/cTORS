@@ -39,6 +39,20 @@ if __name__ == "__main__":
         help="Train the agent (default=evaluate)",
         required=False,
     )
+    parser.add_argument(
+        "-r",
+        "--result-path",
+        help="Path at which to save the result json (default=result.json)",
+        default="result.json",
+    )
+    parser.add_argument(
+        "-n",
+        "--number-trains",
+        help="Number of trains to tell the manager to use. This option is only "
+        "respected when a scenario generator is used.",
+        default=1,
+        type=int,
+    )
     args = parser.parse_args()
     start = time.time()
     manager = initialize_manager(args.episode, args.agent)
@@ -46,7 +60,10 @@ if __name__ == "__main__":
     if args.train:
         raise NotImplementedError("Not yet implemented")
     else:
-        manager.run()
+        failed = manager.run(
+            n_trains=args.number_trains, result_save_path=args.result_path
+        )
+        print(f"Scenario failed: {failed}")
     print("Total running time: {}".format(time.time() - start))
 
     # print("\n***** Summary Metrics *****")
