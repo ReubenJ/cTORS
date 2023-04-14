@@ -1,13 +1,5 @@
 {
-	"comment1": "planner.random_planner.RandomPlanner",
-	"class": "planner.greedy_planner.GreedyPlanner",
-	"comment2": "planner.rl_planner.RLPlanner",
-	"seed": 38,
-	"verbose": 1,
-	"planner.rl_planner.RLPlanner": {
-		"model_save": "ppo_tors",
-		"converter": {
-			"class": "rl.conv.TORSConverter"
-		}
-	}
+	"class": "planner.local_planner.LocalPlanner",
+	"seed": 42,
+	"verbose": 1
 }

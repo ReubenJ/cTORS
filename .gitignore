@@ -28,3 +28,5 @@ cTORS/doc
 TORS/result*.json
 TORS/scenario*.json
 TORS/episode*.json
+
+**/.hypothesis
