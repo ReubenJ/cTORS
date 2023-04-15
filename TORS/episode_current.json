@@ -1,6 +1,6 @@
 {
-	"data folder": "/workspaces/msc-thesis/cTORS/data/Demo",
-	"scenario": "/workspaces/msc-thesis/cTORS/TORS/scenario_current.json",
+	"data folder": "/workspaces/msc-thesis/cTORS/data/TwoTrack",
+	"scenario": "/workspaces/msc-thesis/cTORS/data/TwoTrack/scenario.json",
 	"verbose": 1,
 	"time_limit": 10,
 	"generator": {

@@ -1,5 +1,6 @@
 {
-	"class": "planner.local_planner.LocalPlanner",
-	"seed": 42,
+	"class": "planner.greedy_planner.GreedyPlanner",
+	"seed": 38,
 	"verbose": 1
 }
+

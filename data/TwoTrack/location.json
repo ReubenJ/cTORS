@@ -1,0 +1,113 @@
+{
+	"trackParts": [
+		{
+			"id": "4",
+			"type": "Bumper",
+			"aSide": [
+				"1"
+			],
+			"bSide": [],
+			"length": 0,
+			"name": "bumper_1",
+			"sawMovementAllowed": false,
+			"parkingAllowed": false,
+			"isElectrified": true
+		},
+		{
+			"id": "1",
+			"type": "RailRoad",
+			"aSide": [
+			  "4"
+			],
+			"bSide": [
+			  "7"
+			],
+			"length": 600,
+			"name": "rail_1",
+			"sawMovementAllowed": false,
+			"parkingAllowed": false,
+			"isElectrified": true
+		},
+		{
+			"id": "2",
+			"type": "RailRoad",
+			"aSide": [
+			  "7"
+			],
+			"bSide": [
+			  "5"
+			],
+			"length": 500,
+			"name": "rail_2",
+			"sawMovementAllowed": true,
+			"parkingAllowed": true,
+			"isElectrified": true
+		},
+		{
+			"id": "3",
+			"type": "RailRoad",
+			"aSide": [
+			  "7"
+			],
+			"bSide": [
+			  "6"
+			],
+			"length": 450,
+			"name": "rail_3",
+			"sawMovementAllowed": true,
+			"parkingAllowed": true,
+			"isElectrified": true
+		},
+		{
+			"id": "5",
+			"type": "Bumper",
+			"aSide": [
+				"2"
+			],
+			"bSide": [],
+			"length": 0,
+			"name": "bumper_2",
+			"sawMovementAllowed": false,
+			"parkingAllowed": false,
+			"isElectrified": true
+		},
+		{
+			"id": "6",
+			"type": "Bumper",
+			"aSide": [
+			  "3"
+			],
+			"bSide": [
+			],
+			"length": 0,
+			"name": "bumper_3",
+			"sawMovementAllowed": false,
+			"parkingAllowed": false,
+			"isElectrified": true
+		},
+		{
+			"id": "7",
+			"type": "Switch",
+			"aSide": [
+			  "1"
+			],
+			"bSide": [
+			  "2",
+			  "3"
+			],
+			"length": 0,
+			"name": "switch_1",
+			"sawMovementAllowed": false,
+			"parkingAllowed": false,
+			"isElectrified": true
+		}
+		
+	],
+	"facilities": [
+	],
+	"taskTypes": [],
+	"movementConstant": 0,
+    "movementTrackCoefficient": 60,
+	"movementSwitchCoefficient": 30,
+	"distanceEntries": []
+}
