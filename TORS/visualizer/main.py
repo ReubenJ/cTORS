@@ -9,8 +9,10 @@ from location import Location
 from actions import Actions
 from state import State
 from plan import Plan
+from layout import Layout
 
-layout = "Demo"
+layout = "TwoTrack"
+# layout = "Demo"
 scenario = "scenario.json"
 
 # layout = "KleineBinckhorstVisualizer"
@@ -56,7 +58,7 @@ def register_routes(app: Flask):
     """
 
     @app.route('/')
-    def hello():
+    def _():
         return render_template("base.html")
 
 
@@ -70,6 +72,7 @@ def register_resources(api: Api):
     api.add_resource(Actions, '/engine/actions')
     api.add_resource(State, '/engine/state')
     api.add_resource(Plan, '/engine/plan')
+    api.add_resource(Layout, '/engine/layout')
 
 
 def load_config(app: Flask):

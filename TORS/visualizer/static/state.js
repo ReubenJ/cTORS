@@ -4,6 +4,7 @@ $(document).ready(function () {
     load_layout(refresh_state);
 	setup_collapsables()
     setup_plan_selecter()
+    setup_location_selecter()
     $("#restart-button").attr("onclick", "restart()");
 });
 
@@ -28,7 +29,7 @@ function refresh_state() {
     });
 }
 
-function restart(plan_id) {
+function restart(plan_id, location_id) {
     /*
      * Resets the state
      */
@@ -36,6 +37,12 @@ function restart(plan_id) {
     if(typeof plan_id !== 'undefined') {
         url += '?plan=' + plan_id
         $("#restart-button").attr("onclick", "restart(" + plan_id+ ")");
+    } else if(typeof location_id !== 'undefined') {
+        url += '?location=' + location_id
+        $("#restart-button").attr("onclick", "restart(undefined, " + location_id + ")");
+    } else if(typeof plan_id !== 'undefined' && typeof location_id !== 'undefined') {
+        url += '?plan=' + plan_id + '&location=' + location_id
+        $("#restart-button").attr("onclick", "restart(" + plan_id + ", " + location_id + ")");
     }
     $.ajax({
         url: url,
@@ -258,16 +265,44 @@ function setup_collapsables() {
 
 function update_plan_select(data) {
     var slct = $("#plan-select").first();
+    if(data.length == 0) {
+        var opt = new Option("No plans available", "");
+        opt.hidden = true;
+        slct.append(opt);
+        return;
+    }
     $.each(data, function(i, plan) {
         slct.append(new Option(plan, i));
     });
     slct.change(function () {
-        restart(this.value)
+        restart(this.value, null)
+    });
+}
+
+function update_location_select(data) {
+    var slct = $("#location-select").first();
+    if(data.length == 0) {
+        var opt = new Option("No locations available", "");
+        opt.hidden = true;
+        slct.append(opt);
+        return;
+    }
+    $.each(data, function(i, location) {
+        slct.append(new Option(location, i));
+    });
+    slct.change(function () {
+        restart(null, this.value)
     });
 }
 
 function setup_plan_selecter() {
     $.getJSON("/engine/plan", function (data) {
         update_plan_select(data);
+    });
+}
+
+function setup_location_selecter() {
+    $.getJSON("/engine/layout", function (data) {
+        update_location_select(data);
     });
 }

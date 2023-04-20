@@ -4,7 +4,11 @@ import json
 import os
 
 def get_all_plans():
-    return sorted(os.listdir(os.path.join(current_app.static_folder, '../../runs')))
+    runs_dir = os.path.join(current_app.static_folder, '../../runs')
+    if not os.path.exists(runs_dir):
+        current_app.logger.warning("Plans directory does not exist: %s" % runs_dir)
+        return []
+    return sorted(os.listdir(runs_dir))
 
 def get_plan(ix):
     plans = get_all_plans()

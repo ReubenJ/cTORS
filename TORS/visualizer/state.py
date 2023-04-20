@@ -2,8 +2,9 @@ from flask_restful import Resource
 from flask import Response, request, current_app
 import json
 from typing import List
-from pyTORS import ShuntingUnit
+from pyTORS import ShuntingUnit, Engine
 from plan import get_plan
+from layout import get_layout
 
 class State(Resource):
 
@@ -28,7 +29,13 @@ class State(Resource):
         Reset the state
         """
         current_app.engine.end_session(current_app.state)
+        if "layout" in request.args:
+                layout_id = int(request.args["layout"])
+                layout_path = get_layout(layout_id)
+                if layout_path is None: return Response("Invalid layout id", status=400)
+                current_app.engine = Engine(layout_path)
         if "plan" in request.args:
+            
             result_path = None
             try:
                 plan_id = int(request.args["plan"])
