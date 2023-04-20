@@ -32,20 +32,20 @@
 	],
 	"out": [
 		{
-		  "time": "1000",
+		  "time": "878",
 		  "id": "11111",
 		  "sideTrackPart": "4",
 		  "parkingTrackPart": "1",
 		  "members": [
 			{
-			  "id": "****",
+			  "id": "2422",
 			  "typeDisplayName": "SLT4",
 			  "tasks": []
 			}
 		  ]
 		},
 		{
-			"time": "1300",
+			"time": "1000",
 			"id": "33333",
 			"sideTrackPart": "4",
 			"parkingTrackPart": "1",
@@ -59,7 +59,7 @@
 		}
 	],
 	"startTime": "0",
-	"endTime": "3000",
+	"endTime": "1500",
 	"inStanding": [],
 	"outStanding": [],
 	"trainUnitTypes": [
