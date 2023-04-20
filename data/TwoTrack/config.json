@@ -273,7 +273,7 @@
                 "status": "OK"
             },
             "length_track_rule": {
-                "on": false,
+                "on": true,
                 "soft": false,
                 "category": "TrackOccupation",
                 "parameters": {},
@@ -281,7 +281,7 @@
                 "status": "OK"
             },
             "single_move_track_rule": {
-                "on": false,
+                "on": true,
                 "soft": false,
                 "category": "TrackOccupation",
                 "parameters": {},
