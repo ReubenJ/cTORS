@@ -170,11 +170,10 @@ class Manager:
         planner_lst = planner_str.split(".")
         _module = importlib.import_module(".".join(planner_lst[:-1]))
         _class = getattr(_module, planner_lst[-1])
-        # if planner_str in self.agent_config:
-        # config = self.agent_config[planner_str]
-        # else:
-        config = AgentConfig()
-        # self.agent_config["time_limit"] = self.episode_config.time_limit
+
+        config = self.agent_config.agent_specific
+        self.agent_config.time_limit = self.episode_config.time_limit
+
         planner = _class(self.agent_config, config)
         return planner
 
