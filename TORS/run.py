@@ -1,5 +1,5 @@
 from manager.manager import Manager
-from manager.config import EpisodeConfig, AgentConfig, GreedyAgentConfig
+from manager.config import EpisodeConfig, AgentConfig
 import time
 import argparse
 from serde.json import from_json
@@ -8,13 +8,13 @@ import time
 
 def initialize_manager(episode, agent, seed, epsilon, verbose=0):
     with open(episode, "r") as episode_config_file:
-        episode_config_serde = from_json(EpisodeConfig, episode_config_file.read())
+        episode_config = from_json(EpisodeConfig, episode_config_file.read())
     with open(agent, "r") as agent_config_file:
-        agent_config_serde = from_json(GreedyAgentConfig, agent_config_file.read())
-    agent_config_serde.seed = seed
-    agent_config_serde.epsilon = epsilon
+        agent_config = from_json(AgentConfig, agent_config_file.read())
+    agent_config.seed = seed
+    agent_config.agent_specific["epsilon"] = epsilon
 
-    manager = Manager(episode_config_serde, agent_config_serde)
+    manager = Manager(episode_config, agent_config)
 
     return manager
 
