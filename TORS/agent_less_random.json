@@ -4,7 +4,7 @@
 	"verbose": 1,
 
 	"agent_specific": {
-		"epsilon": 1
+		"epsilon": 0.1
 	}
 }
 

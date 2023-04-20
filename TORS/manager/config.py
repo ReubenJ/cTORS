@@ -2,7 +2,7 @@ import json
 import os
 import importlib
 from dataclasses import dataclass
-from serde import deserialize, field, Strict
+from serde import deserialize, field, Strict, SerdeError
 from pathlib import Path
 from typing import Union
 
@@ -13,8 +13,9 @@ def _valid_class(value):
         planner_lst = value.split(".")
         _module = importlib.import_module(".".join(planner_lst[:-1]))
         getattr(_module, planner_lst[-1])
-    except:
-        raise Exception("Cannot find file or class: {}".format(value))
+    except Exception as e:
+        raise SerdeError("There was an issue with the planner class, there is "
+                         "likely an error above describing the reason.") from e
     return value
 
 
@@ -60,3 +61,4 @@ class AgentConfig:
         default="planner.random_planner.RandomPlanner",
     )
     time_limit: int = -1
+    agent_specific: dict = field(default_factory=dict)
