@@ -1,17 +1,10 @@
 {
-	"data folder": "/workspaces/msc-thesis/cTORS/data/Demo",
-	"scenario": "/workspaces/msc-thesis/cTORS/data/Demo/scenario.json",
+	"data folder": "/workspaces/msc-thesis/cTORS/data/TwoTrack",
+	"scenario": "/workspaces/msc-thesis/cTORS/data/TwoTrack/scenario.json",
 	"verbose": 1,
-	"n_runs": 100,
-	"max_trains": 5,
 	"time_limit": 10,
 	"generator": {
-		"class": "manager.scenario_generator.ScenarioGeneratorFromScenario",
-		"n_workers": 2,
-		"n_disturbances": 0,
+		"class": "manager.scenario_generator.ScenarioGeneratorFromFile",
 		"match_outgoing_trains": true
-	},
-	"tors.core.scenario.scenario_generator.ScenarioGeneratorFromScenario": {
-		"n_combinations": 100
 	}
 }
