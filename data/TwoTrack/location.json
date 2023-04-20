@@ -24,8 +24,8 @@
 			],
 			"length": 600,
 			"name": "rail_1",
-			"sawMovementAllowed": false,
-			"parkingAllowed": false,
+			"sawMovementAllowed": true,
+			"parkingAllowed": true,
 			"isElectrified": true
 		},
 		{
@@ -52,7 +52,7 @@
 			"bSide": [
 			  "6"
 			],
-			"length": 450,
+			"length": 100,
 			"name": "rail_3",
 			"sawMovementAllowed": true,
 			"parkingAllowed": true,
