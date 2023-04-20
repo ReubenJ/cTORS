@@ -1,3 +1,5 @@
+from manager.config import AgentConfig
+
 from planner.planner import Planner
 from pyTORS import (
     BeginMoveAction,
@@ -28,13 +30,14 @@ import logging
 
 
 class GreedyPlanner(Planner):
-    def __init__(self, config, greedy_config):
+    def __init__(self, config: AgentConfig, greedy_config: dict):
         super(GreedyPlanner, self).__init__(config)
+        self.epsilon = greedy_config["epsilon"]
         self.reset()
 
     def get_action(self, state: State) -> Optional[Action]:
         if self.plan is None:
-            self.plan = Plan(state, self.get_location())
+            self.plan = Plan(state, self.get_location(), self.random, self.epsilon)
         actions = self.get_valid_actions(state)
         # self.logger.debug(f"{state.print_state_info()}")
         self.logger.debug(f"{actions=}")
@@ -51,7 +54,9 @@ class GreedyPlanner(Planner):
 
 
 class Plan:
-    def __init__(self, state: State, location: Location):
+    def __init__(self, state: State, location: Location, random: random.Random, epsilon):
+        self.random = random
+        self.epsilon = epsilon
         self.location = location
         self.incoming = state.incoming_trains
         self.outgoing = state.outgoing_trains
@@ -100,8 +105,16 @@ class Plan:
         )
         action_priority = sorted(action_priority, key=lambda ap: ap[0], reverse=True)
         self.logger.debug(action_priority)
-        if action_priority[0][0] == 0:
-            return random.choice(actions)
+
+        # If there is an arrival or exit action, take it
+        for ap in action_priority:
+            if isinstance(ap[1], (ArriveAction, ExitAction)):
+                return ap[1]
+
+        epsilon_choice = self.random.random()
+
+        if action_priority[0][0] == 0 or epsilon_choice < self.epsilon:
+            return self.random.choice(actions)
         return action_priority[0][1]
 
 
@@ -152,7 +165,7 @@ class TrainState:
     def set_same_shunting_unit(self):
         self.same_shunting_unit = self.in_su.matches_shunting_unit(self.out_su)
 
-    def get_action_priority(self, state: State, actions: List[Action]):
+    def get_action_priority(self, state: State, actions: List[Action]) -> List[Tuple[int, Action]]:
         su = self.in_su
         priority = [(0, actions[0])]
         if state.time == self.arrival_time:
