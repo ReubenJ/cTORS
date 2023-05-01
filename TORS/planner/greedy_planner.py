@@ -33,11 +33,12 @@ class GreedyPlanner(Planner):
     def __init__(self, config: AgentConfig, greedy_config: dict):
         super(GreedyPlanner, self).__init__(config)
         self.epsilon = greedy_config["epsilon"]
+        self.existing_plan = greedy_config.get("existing_plan")
         self.reset()
 
     def get_action(self, state: State) -> Optional[Action]:
         if self.plan is None:
-            self.plan = Plan(state, self.get_location(), self.random, self.epsilon)
+            self.plan = Plan(state, self.get_location(), self.random, self.epsilon, self.existing_plan)
         actions = self.get_valid_actions(state)
         # self.logger.debug(f"{state.print_state_info()}")
         self.logger.debug(f"{actions=}")
@@ -54,10 +55,13 @@ class GreedyPlanner(Planner):
 
 
 class Plan:
-    def __init__(self, state: State, location: Location, random: random.Random, epsilon):
+    def __init__(self, state: State, location: Location, random: random.Random, epsilon, existing_plan):
         self.random = random
         self.epsilon = epsilon
         self.location = location
+        self.existing_plan = existing_plan
+        self.existing_index = 0
+        self.existing_failed = False
         self.incoming = state.incoming_trains
         self.outgoing = state.outgoing_trains
         self.trains = {}
@@ -88,6 +92,36 @@ class Plan:
             if t.type == train.type:
                 return t
         return None
+    
+    @staticmethod
+    def _match_action(action_a: dict, action_b: Action) -> bool:
+        ids_a = action_a.get("trainUnitIds")
+        ids_b = [x.get_id() for x in action_b.shunting_unit.trains]
+        if ids_a == ids_b:
+            return True
+        
+        if (task := action_a.get("task")) is not None:
+            predefined = task["type"]["predefined"]
+            if isinstance(action_b, ExitAction) and predefined == "Exit":
+                return True
+            elif isinstance(action_b, CombineAction) and predefined == "Combine":
+                return True
+            elif isinstance(action_b, SplitAction) and predefined == "Split":
+                return True
+            elif isinstance(action_b, ServiceAction) and predefined == "Service":
+                return True
+            elif isinstance(action_b, SetbackAction) and predefined == "Walking":
+                return True
+            elif isinstance(action_b, ArriveAction) and predefined == "Arrive":
+                return True
+
+        elif (move := action_a.get("movement")) is not None:
+            tracks_a = move["path"]
+            tracks_b = type(MoveAction)(action_b)
+            if tracks_a == tracks_b:
+                return False
+        
+        return False
 
     def get_action(self, state: State, actions: List[Action]):
         for su in state.shunting_units:
@@ -96,6 +130,27 @@ class Plan:
             for tr in su.trains:
                 serv = state.get_tasks_for_train(tr)
                 self.trains[tr].update_current_state(prev, pos, serv, su)
+        
+        # Apply existing plan, if specified
+        if self.existing_plan is not None and self.existing_index < len(self.existing_plan) and not self.existing_failed:
+            action_to_find = self.existing_plan[self.existing_index]
+            self.logger.debug("Action to find: %s", action_to_find)
+            matching_actions = list(filter(lambda x: Plan._match_action(action_to_find, x), actions))
+            self.logger.debug("Found %s matching actions: %s", len(matching_actions), matching_actions)
+            if len(matching_actions) == 0:
+                self.logger.info("Failed to execute next step in plan, "
+                                  "reverting to normal greedy policy.")
+                self.existing_failed = True
+            else:
+                if len(matching_actions) > 1:
+                    self.info("More than one matching action: %s, "
+                            "choosing the first one.", matching_actions)
+                    
+                self.existing_index += 1
+
+                return matching_actions[0]
+
+        # Otherwise continue with greedy plan
         action_priority = sum(
             [
                 train_state.get_action_priority(state, actions)
