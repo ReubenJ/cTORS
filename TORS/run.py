@@ -4,7 +4,15 @@ import time
 import argparse
 from serde.json import from_json
 import time
+import logging
+from rich.logging import RichHandler
 
+FORMAT = "%(message)s"
+logging.basicConfig(
+    level=logging.INFO, format=FORMAT, datefmt="[%X]", handlers=[RichHandler(rich_tracebacks=True)]
+)
+
+logger = logging.getLogger(__name__)
 
 def initialize_manager(episode, agent, seed, epsilon, verbose=0):
     with open(episode, "r") as episode_config_file:
@@ -79,9 +87,9 @@ if __name__ == "__main__":
         failed = manager.run(
             n_trains=args.number_trains, result_save_path=args.result_path
         )
-        print(f"Scenario failed: {failed}")
+        logger.info(f"Scenario failed: {failed}")
     # print(f"Success rate: {0/100}")
-    print("Total running time: {}".format(time.time() - start))
+    logger.info("Total running time: {}".format(time.time() - start))
 
     # print("\n***** Summary Metrics *****")
     # pprint.pprint(metrics)
