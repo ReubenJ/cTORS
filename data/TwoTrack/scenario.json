@@ -4,7 +4,7 @@
 	"workers": [],
 	"in": [
 		{
-			"time": "30",
+			"time": "10",
 			"id": "11111",
 			"sideTrackPart": "4",
 			"parkingTrackPart": "1",

@@ -2,9 +2,242 @@
 	"class": "planner.greedy_planner.GreedyPlanner",
 	"seed": 42,
 	"verbose": 1,
-
 	"agent_specific": {
-		"epsilon": 1
+		"epsilon": 1,
+		"existing_plan": [
+			{
+				"suggestedStartingTime": "30",
+				"suggestedFinishingTime": "30",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Arrive"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "30",
+				"suggestedFinishingTime": "30",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "BeginMove"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "30",
+				"suggestedFinishingTime": "214",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "150",
+				"suggestedFinishingTime": "150",
+				"trainUnitIds": [
+					"2301"
+				],
+				"task": {
+					"type": {
+						"predefined": "Arrive"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "150",
+				"suggestedFinishingTime": "318",
+				"minimumDuration": "168",
+				"trainUnitIds": [
+					"2301"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "214",
+				"suggestedFinishingTime": "214",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "EndMove"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "214",
+				"suggestedFinishingTime": "398",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "398",
+				"suggestedFinishingTime": "398",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "BeginMove"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "398",
+				"suggestedFinishingTime": "488",
+				"minimumDuration": "90",
+				"trainUnitIds": [
+					"2422"
+				],
+				"movement": {
+					"path": [
+						"1",
+						"7",
+						"2"
+					],
+					"fromSide": "B",
+					"toSide": "B"
+				}
+			},
+			{
+				"suggestedStartingTime": "488",
+				"suggestedFinishingTime": "672",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "672",
+				"suggestedFinishingTime": "856",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "856",
+				"suggestedFinishingTime": "1040",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "1000",
+				"suggestedFinishingTime": "1000",
+				"trainUnitIds": [
+					"2301"
+				],
+				"task": {
+					"type": {
+						"predefined": "Exit"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "1040",
+				"suggestedFinishingTime": "1130",
+				"minimumDuration": "90",
+				"trainUnitIds": [
+					"2422"
+				],
+				"movement": {
+					"path": [
+						"2",
+						"7",
+						"1"
+					],
+					"fromSide": "A",
+					"toSide": "B"
+				}
+			},
+			{
+				"suggestedStartingTime": "1130",
+				"suggestedFinishingTime": "1314",
+				"minimumDuration": "184",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Walking"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "1314",
+				"suggestedFinishingTime": "1314",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "EndMove"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "1314",
+				"suggestedFinishingTime": "1314",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "BeginMove"
+					}
+				}
+			},
+			{
+				"suggestedStartingTime": "1314",
+				"suggestedFinishingTime": "1314",
+				"trainUnitIds": [
+					"2422"
+				],
+				"task": {
+					"type": {
+						"predefined": "Exit"
+					}
+				}
+			}
+		]
 	}
 }
-
