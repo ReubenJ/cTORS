@@ -93,15 +93,23 @@ class Plan:
                 return t
         return None
     
-    @staticmethod
-    def _match_action(action_a: dict, action_b: Action) -> bool:
-        ids_a = action_a.get("trainUnitIds")
+    def _match_action(self, action_a: dict, action_b: Action) -> bool:
+        self.logger.debug("Checking if actions match, action_b: %s", action_b)
+        # Step 1: wait actions should already be filtered out
+        if isinstance(action_b, WaitAction):
+            self.logger.exception("Wait actions should already be filtered out")
+        # Step 2: check if the train ids match
+        ids_a = [int(train_id) for train_id in action_a.get("trainUnitIds")]
         ids_b = [x.get_id() for x in action_b.shunting_unit.trains]
-        if ids_a == ids_b:
-            return True
+        self.logger.debug("ids_a: %s, ids_b: %s", ids_a, ids_b)
+        if ids_a != ids_b:
+            return False
         
+        # Step 3: check if the actions match
         if (task := action_a.get("task")) is not None:
             predefined = task["type"]["predefined"]
+            self.logger.debug("predefined: %s", predefined)
+            self.logger.debug("action_b: %s", action_b)
             if isinstance(action_b, ExitAction) and predefined == "Exit":
                 return True
             elif isinstance(action_b, CombineAction) and predefined == "Combine":
@@ -114,14 +122,72 @@ class Plan:
                 return True
             elif isinstance(action_b, ArriveAction) and predefined == "Arrive":
                 return True
+            elif isinstance(action_b, BeginMoveAction) and predefined == "BeginMove":
+                return True
+            elif isinstance(action_b, EndMoveAction) and predefined == "EndMove":
+                return True
+        if isinstance(action_b, MoveAction) and (move := action_a.get("movement")) is not None:
+            """
+            example of a movement action:
+            {
+                "trainUnitIds": [
+                    "2422"
+                ],
+                "minimumDuration": "90",
+                "movement": {
+                    "fromSide": "A",
+                    "path": [
+                        "3",
+                        "7",
+                        "1"
+                    ],
+                    "toSide": "B"
+                }
+            },
 
-        elif (move := action_a.get("movement")) is not None:
+            In order to compare, we need to compare the path array with the tracks array
+            of the MoveAction object.
+            """
             tracks_a = move["path"]
-            tracks_b = type(MoveAction)(action_b)
+            # get array of track ids from action_b
+            tracks_b = [x.id for x in action_b.tracks]
+            self.logger.debug("tracks_a: %s, tracks_b: %s", tracks_a, tracks_b)
+
             if tracks_a == tracks_b:
-                return False
-        
+                return True
+
         return False
+    
+    def _apply_existing_plan(self, actions: List[Action]) -> Optional[Action]:
+        action_to_find = self.existing_plan[self.existing_index]
+        self.logger.debug("Action to find: %s", action_to_find)
+
+        waitactions = list(filter(lambda x: isinstance(x, WaitAction), actions))
+        non_waitactions = list(filter(lambda x: not isinstance(x, WaitAction), actions))
+        matching_actions = list(filter(lambda x: self._match_action(action_to_find, x), non_waitactions))
+
+        self.logger.debug("Found %s matching actions: %s", len(matching_actions), matching_actions)
+        self.logger.debug("Wait actions: %s", waitactions)
+
+        if len(matching_actions) == 0:
+            if len(waitactions) > 0:
+                self.logger.info("No matching actions found, waiting instead.")
+                return waitactions[0]
+            else:
+                self.logger.warn("Failed to execute next step in plan, "
+                                "reverting to normal greedy policy.")
+                self.existing_failed = True
+        else:
+            if len(matching_actions) > 1:
+                self.logger.info("More than one matching action: %s, "
+                        "choosing the first one.", matching_actions)
+                
+            self.existing_index += 1
+
+            self.logger.info("Executing next step in plan: %s", matching_actions[0])
+
+            return matching_actions[0]
+        return None
 
     def get_action(self, state: State, actions: List[Action]):
         for su in state.shunting_units:
@@ -133,22 +199,9 @@ class Plan:
         
         # Apply existing plan, if specified
         if self.existing_plan is not None and self.existing_index < len(self.existing_plan) and not self.existing_failed:
-            action_to_find = self.existing_plan[self.existing_index]
-            self.logger.debug("Action to find: %s", action_to_find)
-            matching_actions = list(filter(lambda x: Plan._match_action(action_to_find, x), actions))
-            self.logger.debug("Found %s matching actions: %s", len(matching_actions), matching_actions)
-            if len(matching_actions) == 0:
-                self.logger.info("Failed to execute next step in plan, "
-                                  "reverting to normal greedy policy.")
-                self.existing_failed = True
-            else:
-                if len(matching_actions) > 1:
-                    self.info("More than one matching action: %s, "
-                            "choosing the first one.", matching_actions)
-                    
-                self.existing_index += 1
-
-                return matching_actions[0]
+            next_action_from_existing_plan = self._apply_existing_plan(actions)
+            if next_action_from_existing_plan is not None:
+                return next_action_from_existing_plan
 
         # Otherwise continue with greedy plan
         action_priority = sum(
