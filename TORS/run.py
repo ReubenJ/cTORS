@@ -9,7 +9,7 @@ from rich.logging import RichHandler
 
 FORMAT = "%(message)s"
 logging.basicConfig(
-    level=logging.INFO, format=FORMAT, datefmt="[%X]", handlers=[RichHandler(rich_tracebacks=True)]
+    level=logging.DEBUG, format=FORMAT, datefmt="[%X]", handlers=[RichHandler(rich_tracebacks=True)]
 )
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,21 @@ def initialize_manager(episode, agent, seed, epsilon, verbose=0):
     manager = Manager(episode_config, agent_config)
 
     return manager
+
+def main(args):
+    global logger
+    start = time.time()
+    manager = initialize_manager(args.episode, args.agent, args.seed, args.epsilon)
+
+    if args.train:
+        raise NotImplementedError("Not yet implemented")
+    else:
+        failed = manager.run(
+            n_trains=args.number_trains, result_save_path=args.result_path
+        )
+        logger.info(f"Scenario failed: {failed}")
+    # print(f"Success rate: {0/100}")
+    logger.info("Total running time: {}".format(time.time() - start))
 
 
 if __name__ == "__main__":
@@ -78,18 +93,4 @@ if __name__ == "__main__":
         type=float,
     )
     args = parser.parse_args()
-    start = time.time()
-    manager = initialize_manager(args.episode, args.agent, args.seed, args.epsilon)
-
-    if args.train:
-        raise NotImplementedError("Not yet implemented")
-    else:
-        failed = manager.run(
-            n_trains=args.number_trains, result_save_path=args.result_path
-        )
-        logger.info(f"Scenario failed: {failed}")
-    # print(f"Success rate: {0/100}")
-    logger.info("Total running time: {}".format(time.time() - start))
-
-    # print("\n***** Summary Metrics *****")
-    # pprint.pprint(metrics)
+    main(args)

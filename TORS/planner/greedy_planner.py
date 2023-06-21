@@ -27,7 +27,8 @@ from pyTORS import (
 import random
 from typing import List, Tuple, Type, Optional
 import logging
-
+from contextlib import redirect_stdout
+from io import StringIO
 
 class GreedyPlanner(Planner):
     def __init__(self, config: AgentConfig, greedy_config: dict):
@@ -38,10 +39,16 @@ class GreedyPlanner(Planner):
 
     def get_action(self, state: State) -> Optional[Action]:
         if self.plan is None:
+            self.logger.debug("Plan is not yet initialized, initializing...")
             self.plan = Plan(state, self.get_location(), self.random, self.epsilon, self.existing_plan)
+        
+        with redirect_stdout(StringIO()) as temp_io:
+            state.print_state_info()
+        self.logger.debug("\n" + temp_io.getvalue())
+        self.logger.debug("Getting actions")
         actions = self.get_valid_actions(state)
-        # self.logger.debug(f"{state.print_state_info()}")
         self.logger.debug(f"{actions=}")
+        
         if len(actions) == 0:
             return None
         return self.plan.get_action(state, actions)
@@ -174,8 +181,8 @@ class Plan:
                 self.logger.info("No matching actions found, waiting instead.")
                 return waitactions[0]
             else:
-                self.logger.warn("Failed to execute next step in plan, "
-                                "reverting to normal greedy policy.")
+                self.logger.warning("Failed to execute next step in plan, "
+                                    "reverting to normal greedy policy.")
                 self.existing_failed = True
         else:
             if len(matching_actions) > 1:
@@ -201,6 +208,8 @@ class Plan:
         if self.existing_plan is not None and self.existing_index < len(self.existing_plan) and not self.existing_failed:
             next_action_from_existing_plan = self._apply_existing_plan(actions)
             if next_action_from_existing_plan is not None:
+                index_of_chosen_action = actions.index(next_action_from_existing_plan)
+                self.logger.debug(f"{index_of_chosen_action=}")
                 return next_action_from_existing_plan
 
         # Otherwise continue with greedy plan
@@ -217,12 +226,19 @@ class Plan:
         # If there is an arrival or exit action, take it
         for ap in action_priority:
             if isinstance(ap[1], (ArriveAction, ExitAction)):
-                return ap[1]
+                self.logger.info("Action is a %s action, taking it.", ap[1].__class__.__name__)
+                chosen_action = ap[1]
+                index_of_chosen_action = actions.index(chosen_action)
+                self.logger
+                return chosen_action
 
         epsilon_choice = self.random.random()
 
         if action_priority[0][0] == 0 or epsilon_choice < self.epsilon:
-            return self.random.choice(actions)
+            chosen_action = self.random.choice(actions)
+            return chosen_action
+        index_of_chosen_action = actions.index(action_priority[0][1])
+        self.logger.debug(f"{index_of_chosen_action=}")
         return action_priority[0][1]
 
 

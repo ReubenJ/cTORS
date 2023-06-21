@@ -10,7 +10,7 @@ from actions import Actions
 from state import State
 from plan import Plan
 
-layout = "Demo"
+layout = "LargerInstance"
 scenario = "scenario.json"
 
 # layout = "KleineBinckhorstVisualizer"

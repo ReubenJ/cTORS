@@ -8,10 +8,9 @@ def test_agent_config():
         "seed": 42,
         "verbose": 1,
 
-        "planner.greedy_planner.GreedyPlanner": {
+        "agent_specific": {
             "epsilon": 0.5
         }
     }
     new_agent_config = from_dict(AgentConfig, example_config)
-
-    assert new_agent_config.agent_specific_config.epsilon == 0.5
+    assert new_agent_config.agent_specific["epsilon"] == 0.5
