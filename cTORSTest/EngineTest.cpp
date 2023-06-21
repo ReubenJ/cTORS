@@ -68,6 +68,46 @@ namespace cTORSTest
 		}
 	}
 
+	TEST_CASE("Larger scenario test") {
+		LocationEngine engine("data/LargerInstance");
+		auto& scenario = engine.GetScenario("data/LargerInstance/scenario.json");
+		CHECK(scenario.GetIncomingTrains().front()->GetShuntingUnit()->GetTrains().front().GetType()!=nullptr);
+		auto state = engine.StartSession(scenario);
+		engine.Step(state);
+		// Create a vector of the action indices to select
+		vector<int> action_indices = {0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0};
+		for (auto idx : action_indices) {
+			try{
+				list<const Action*> &actions = engine.GetValidActions(state);
+				if(actions.size() <= idx) break;
+				auto it = actions.begin();
+				advance(it, idx);
+				auto action = *it;
+				engine.ApplyActionAndStep(state, action);
+			} catch(ScenarioFailedException& e) { break; }
+		}
+	}
+
+	TEST_CASE("Larger scenario seed 6946 max length invalid action") {
+		LocationEngine engine("data/ExceedsMaxLengthSeed6946");
+		auto& scenario = engine.GetScenario("data/ExceedsMaxLengthSeed6946/scenario.json");
+		CHECK(scenario.GetIncomingTrains().front()->GetShuntingUnit()->GetTrains().front().GetType()!=nullptr);
+		auto state = engine.StartSession(scenario);
+		engine.Step(state);
+		// Create a vector of the action indices to select
+		vector<int> action_indices = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0};
+		for (auto idx : action_indices) {
+			try{
+				list<const Action*> &actions = engine.GetValidActions(state);
+				if(actions.size() <= idx) break;
+				auto it = actions.begin();
+				advance(it, idx);
+				auto action = *it;
+				engine.ApplyActionAndStep(state, action);
+			} catch(ScenarioFailedException& e) { break; }
+		}
+	}
+
 	TEST_CASE("Actions test") {
 		LocationEngine engine("data/Demo");
 		auto& scenario = engine.GetScenario("data/Demo/scenario.json");
