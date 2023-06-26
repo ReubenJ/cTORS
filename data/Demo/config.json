@@ -21,7 +21,7 @@
                 "status": "OK"
             },
             "in_correct_time_rule": {
-                "on": true,
+                "on": false,
                 "soft": false,
                 "category": "ArrivalAndDeparture",
                 "parameters": {},
@@ -37,7 +37,7 @@
                 "status": "OK"
             },
             "out_correct_time_rule": {
-                "on": true,
+                "on": false,
                 "soft": false,
                 "category": "ArrivalAndDeparture",
                 "parameters": {},
@@ -273,7 +273,7 @@
                 "status": "OK"
             },
             "length_track_rule": {
-                "on": false,
+                "on": true,
                 "soft": false,
                 "category": "TrackOccupation",
                 "parameters": {},
